@@ -1,13 +1,28 @@
 # weather-app-microservice
-C:\Users\saura\Desktop\Java\weather-app> mvn package
-C:\Users\saura\Desktop\Java\weather-app> serverless deploy
+
+#Please find the steps to build and deploy the microservice on AWS Lambda using Cloudformation template
+
+#It is assumed that nodeJS is installed and npm commands can be executed via command-line
+
+#Install serverless
+npm install -g serverless
+
+#configure AWS profile (An IAM user linked to my personal AWS account)
+serverless config credentials --provider aws --key AKIAJXKHW3HOCRFEZPJQ --secret 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
+
+#Build the project
+mvn package
+
+#Deploy to AWS Lambda (Will create an API link vi API Gateway)
+serverless deploy
+
 Serverless: Packaging service...
 Serverless: Uploading CloudFormation file to S3...
 Serverless: Uploading artifacts...
 Serverless: Validating template...
 Serverless: Updating Stack...
 Serverless: Checking Stack update progress...
-..............................
+..............
 Serverless: Stack update finished...
 Service Information
 service: weather-app-microservice
@@ -17,6 +32,12 @@ stack: weather-app-microservice-dev
 api keys:
   None
 endpoints:
-  GET - https://4ce8rjr0je.execute-api.us-east-1.amazonaws.com/dev/ping
+  GET - https://4ce8rjr0je.execute-api.us-east-1.amazonaws.com/dev/weather/city
 functions:
-  currentTime: weather-app-microservice-dev-currentTime
+  currentWeather: weather-app-microservice-dev-currentWeather
+
+#Test by opening the URL on any browser
+https://4ce8rjr0je.execute-api.us-east-1.amazonaws.com/dev/weather/city?id=7839805
+
+#Test the created lambda function on local 
+serverless invoke --function currentWeather --log {"pathParameters":{"id":"7839805"}}

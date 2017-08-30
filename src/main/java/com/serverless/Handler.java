@@ -1,6 +1,5 @@
 package com.serverless;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.BufferedReader;
@@ -19,17 +18,18 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 
 	@Override
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
-		LOG.info("received: " + input);
+		String cityId = (String) input.get("Id");
 		String rest_api_response = null;
-		String restURL = "http://samples.openweathermap.org/data/2.5/weather?id=7839805&appid=b1b15e88fa797225412429c1c50c122a1";
-		
+		String restURL = "http://samples.openweathermap.org/data/2.5/weather?id="+ cityId +"&appid=b1b15e88fa797225412429c1c50c122a1";
+		LOG.info("restURL: " + restURL);
+
 		try{
 			rest_api_response = callRestAPI(restURL);
 		} catch (Exception e) {
-			System.out.print("Error while calling REST API" + e);
+			LOG.error("Error while calling REST API" + e);
 		}
 		
-		Response responseBody = new Response("The weather details of Melbourne from OpenWeather API call " + rest_api_response);
+		Response responseBody = new Response(rest_api_response);
 
 		Map<String, String> headers = new HashMap<>();
 		headers.put("X-Powered-By", "AWS Lambda & Serverless");

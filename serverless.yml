@@ -10,9 +10,16 @@ package:
   artifact: target/weather-app-microservice.jar
 
 functions:
-  currentTime:
+  currentWeather:
     handler: com.serverless.Handler
     events:
       - http:
-          path: ping
+          path: weather/city
           method: get
+          integration: lambda
+          request:
+            template:
+              application/json: >
+                {
+                  "cityId" : "$input.params('Id')"
+                }
