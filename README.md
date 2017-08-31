@@ -7,7 +7,7 @@
 >npm install -g serverless
 
 #### configure AWS profile (An IAM user linked to my personal AWS account)
->serverless config credentials --provider aws --key AKIAJXKHW3HOCRFEZPJQ --secret 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
+>serverless config credentials --provider aws --key XXXXXXXX --secret XXXXXXXXXX
 
 #### Build the project
 >mvn package
