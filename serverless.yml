@@ -24,3 +24,5 @@ functions:
                 {
                   "id" : "$input.params('id')"
                 }
+          environment:
+              WEATHER_API_BASE_URL: http://api.openweathermap.org/data/2.5/weather?&APPID=0c87cd4372ac1f3b58570b17e8f7326b&units=metric
