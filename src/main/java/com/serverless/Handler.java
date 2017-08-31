@@ -6,6 +6,11 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.apache.log4j.Logger;
 
@@ -18,18 +23,38 @@ public class Handler implements RequestHandler<Map<String, Object>, ApiGatewayRe
 
 	@Override
 	public ApiGatewayResponse handleRequest(Map<String, Object> input, Context context) {
-		String cityId = (String) input.get("Id");
+		String cityId = (String) input.get("id");
+		LOG.info("cityId: " + cityId);
 		String rest_api_response = null;
-		String restURL = "http://samples.openweathermap.org/data/2.5/weather?id="+ cityId +"&appid=b1b15e88fa797225412429c1c50c122a1";
+		String restURL = "http://api.openweathermap.org/data/2.5/weather?id="+ cityId +"&APPID=0c87cd4372ac1f3b58570b17e8f7326b&units=metric";
 		LOG.info("restURL: " + restURL);
 
 		try{
 			rest_api_response = callRestAPI(restURL);
+
 		} catch (Exception e) {
 			LOG.error("Error while calling REST API" + e);
 		}
 		
-		Response responseBody = new Response(rest_api_response);
+		Response responseBody = new Response();
+
+		JsonParser parser=new JsonParser();
+		JsonObject object=(JsonObject)parser.parse(rest_api_response);
+
+		String weather = object.get("weather").getAsJsonArray().get(0).getAsJsonObject().get("description").getAsString();
+		String temperature = object.get("main").getAsJsonObject().get("temp").getAsString();
+		String city = object.get("name").getAsString();
+		String wind = object.get("wind").getAsJsonObject().get("speed").getAsString();
+		wind = wind + " m/s";
+		String pattern = "EEEE h:mm a";
+		SimpleDateFormat format = new SimpleDateFormat(pattern);
+		String time = format.format(new Date());
+
+		responseBody.setCity(city);
+		responseBody.setTemperature(temperature);
+		responseBody.setUpdatedTime(time);
+		responseBody.setWeather(weather);
+		responseBody.setWind(wind);
 
 		Map<String, String> headers = new HashMap<>();
 		headers.put("X-Powered-By", "AWS Lambda & Serverless");

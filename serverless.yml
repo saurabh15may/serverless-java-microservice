@@ -16,10 +16,11 @@ functions:
       - http:
           path: weather/city
           method: get
+          cors: true
           integration: lambda
           request:
             template:
               application/json: >
                 {
-                  "cityId" : "$input.params('Id')"
+                  "id" : "$input.params('id')"
                 }
